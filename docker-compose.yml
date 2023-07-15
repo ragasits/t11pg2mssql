@@ -1,0 +1,39 @@
+version: '3'
+services:
+  pg1:
+    container_name: pg1
+    build:
+      dockerfile: pg1.Dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - ./pg2/data:/var/lib/postgresql/data-slave      
+  pg2:
+    container_name: pg2
+    build:
+      dockerfile: pg2.Dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '127.0.0.1:5433:5432'
+    depends_on:
+      - pg1
+    volumes:
+      - ./pg2/data:/var/lib/postgresql/data          
+
+  mssql:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server:2022-CU4-ubuntu-20.04
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "ZoldDiszno42"
+      ACCEPT_EULA: "Y"      
+      MSSQL_PID: Express        
+    volumes:
+      - ./mssql/:/t11pg 
+ 
